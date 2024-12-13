@@ -5,27 +5,29 @@ services:
     container_name: mysql-master
     environment:
       MYSQL_ROOT_PASSWORD: 123456  # MySQL root 用户的密码
-      MYSQL_DATABASE: test_db  # 要创建的数据库名称
+      # MYSQL_DATABASE: test_db  # 要创建的数据库名称
     ports:
       - "33061:3306"  # 映射到主服务器的端口
     volumes:
       - ./mysql-master/data:/var/lib/mysql  # 挂载数据目录
-      - ./mysql-master/config/mysql.conf:/etc/mysql/conf.d/mysql.conf  # 挂载主服务器的配置文件
+      - ./mysql-master/config/my.cnf:/etc/my.cnf  # 挂载主服务配置
+      - ./mysql-master/config/custom.cnf:/etc/mysql/conf.d/custom.cnf  # 挂载主服务器的自定义配置文件
       - ./mysql-master/log:/var/log/mysql  # 挂载日志目录
-    command: --server-id=1 --log-bin=master-bin --binlog-do-db=test_db --binlog-format=row --gtid-mode=ON --enforce-gtid-consistency=ON  # 主服务器的命令参数
+    #command: --server-id=1 --log-bin=master-bin --binlog-do-db=test_db --binlog-format=row --gtid-mode=ON --enforce-gtid-consistency=ON  # 主服务器的命令参数
  
   mysql-slave:
     image: mysql:8.0.30
     container_name: mysql-slave
     environment:
       MYSQL_ROOT_PASSWORD: 123456  # MySQL root 用户的密码
-      MYSQL_DATABASE: test_db  # 要创建的数据库名称
+      #MYSQL_DATABASE: test_db  # 要创建的数据库名称
     ports:
       - "33062:3306"  # 映射到从服务器的端口
     volumes:
       - ./mysql-slave/data:/var/lib/mysql  # 挂载数据目录
-      - ./mysql-slave/config:/etc/mysql/conf.d  # 挂载从服务器的配置文件
+      - ./mysql-slave/config/my.cnf:/etc/my.cnf # 挂载从服务器的配置文件
+      - ./mysql-slave/config/custom.cnf:/etc/mysql/conf.d/custom.cnf  # 挂载从服务器的配置文件
       - ./mysql-slave/log:/var/log/mysql  # 挂载日志目录
-    command: --server-id=2 --log-bin=slave-bin --binlog-do-db=test_db --binlog-format=row --gtid-mode=ON --enforce-gtid-consistency=ON --skip-slave-start  # 从服务器的命令参数
+    #command: --server-id=2 --log-bin=slave-bin --binlog-do-db=test_db --binlog-format=row --gtid-mode=ON --enforce-gtid-consistency=ON --skip-slave-start  # 从服务器的命令参数
     depends_on:
       - mysql-master  # 确保主服务器先启动
