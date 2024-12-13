@@ -11,7 +11,7 @@ services:
     volumes:
       - ./mysql-master/data:/var/lib/mysql  # 挂载数据目录
       - ./mysql-master/config/my.cnf:/etc/my.cnf  # 挂载主服务配置
-      - ./mysql-master/config/custom.cnf:/etc/mysql/conf.d/custom.cnf  # 挂载主服务器的自定义配置文件
+      - ./mysql-master/config/custom.cnf:/etc/mysql/conf.d/custom.cnf  # 挂载主服务器的自定义配置文件(主配置my.cnf会调用custom.cnf)
       - ./mysql-master/log:/var/log/mysql  # 挂载日志目录
     #command: --server-id=1 --log-bin=master-bin --binlog-do-db=test_db --binlog-format=row --gtid-mode=ON --enforce-gtid-consistency=ON  # 主服务器的命令参数
  
@@ -26,7 +26,7 @@ services:
     volumes:
       - ./mysql-slave/data:/var/lib/mysql  # 挂载数据目录
       - ./mysql-slave/config/my.cnf:/etc/my.cnf # 挂载从服务器的配置文件
-      - ./mysql-slave/config/custom.cnf:/etc/mysql/conf.d/custom.cnf  # 挂载从服务器的配置文件
+      - ./mysql-slave/config/custom.cnf:/etc/mysql/conf.d/custom.cnf  # 挂载从服务器的配置文件(主配置my.cnf会调用custom.cnf)
       - ./mysql-slave/log:/var/log/mysql  # 挂载日志目录
     #command: --server-id=2 --log-bin=slave-bin --binlog-do-db=test_db --binlog-format=row --gtid-mode=ON --enforce-gtid-consistency=ON --skip-slave-start  # 从服务器的命令参数
     depends_on:
